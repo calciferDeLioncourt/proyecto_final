@@ -42,7 +42,7 @@ jobs:
         run: poetry build
 
       - name: Build Docker image
-        run: docker build -t test-intermediate-lvl .
+        run: docker build -t proyecto_final .
 
       - name: Login Docker Hub
         uses: docker/login-action@v3
