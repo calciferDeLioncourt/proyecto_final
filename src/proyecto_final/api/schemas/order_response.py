@@ -26,7 +26,7 @@ class OrderResponseSchema(BaseModel):
     id: int
     customer_name: str
     items: list[OrderItemResponseSchema]
-    total: Decimal
+    total: Decimal | None
 
     model_config = {
         "from_attributes": True,
