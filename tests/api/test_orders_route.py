@@ -1,6 +1,24 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from proyecto_final.api.main import app
+from proyecto_final.infrastructure.database.session import Base
+from tests.data.test_order import test_engine
+
+
+@pytest.fixture(autouse=True)
+def setup_database():
+
+    Base.metadata.create_all(
+        bind=test_engine,
+    )
+
+    yield
+
+    Base.metadata.drop_all(
+        bind=test_engine,
+    )
+
 
 client = TestClient(app)
 
