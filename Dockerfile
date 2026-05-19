@@ -23,6 +23,9 @@ RUN poetry install --no-interaction --no-root
 # =========================
 # Runtime Stage
 # =========================
+# =========================
+# Runtime Stage
+# =========================
 FROM python:3.14-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -33,6 +36,9 @@ ENV PYTHONPATH=/app/src
 
 WORKDIR /app
 
+# Crear usuario y grupo no-root
+RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
+
 # Copiar librerías instaladas desde builder
 COPY --from=builder /usr/local/lib/python3.14 /usr/local/lib/python3.14
 
@@ -42,8 +48,14 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 # Copiar código proyecto
 COPY . .
 
+# Ajustar permisos
+RUN chown -R appuser:appgroup /app
+
+# Cambiar a usuario no-root
+USER appuser
+
 # Exponer puerto FastAPI
 EXPOSE 8000
 
 # Ejecutar aplicación
-CMD ["uvicorn", "proyecto_final.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn","proyecto_final.api.main:app","--host","0.0.0.0","--port","8000"]
