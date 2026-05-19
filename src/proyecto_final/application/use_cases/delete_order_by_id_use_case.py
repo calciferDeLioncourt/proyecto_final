@@ -4,6 +4,7 @@ from proyecto_final.domain.entities.order import Order
 from proyecto_final.domain.ports.order_repository_port import (
     OrderRepositoryPort,
 )
+from proyecto_final.infrastructure.logging.logger import logger
 
 
 class DeleteOrderByIdUseCase:
@@ -28,5 +29,7 @@ class DeleteOrderByIdUseCase:
             return None
 
         order.total = Decimal("0")
+
+        logger.info("Orden borrada")
 
         return order

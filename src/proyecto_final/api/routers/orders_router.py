@@ -5,9 +5,7 @@ Router orders.
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from proyecto_final.api.dependencies.auth_dependency import (
-    get_current_user,
-)
+from proyecto_final.api.dependencies.auth_dependency import get_current_user
 from proyecto_final.api.dependencies.database_dependency import get_db
 from proyecto_final.api.schemas.order_request import OrderCreateSchema
 from proyecto_final.api.schemas.order_response import (
@@ -93,18 +91,25 @@ async def create_order_endpoint(
         [result],
     )
 
-    return OrderResponseSchema(
-        id=result.id,
-        customer_name=result.customer_name,
-        items=[
+    assert result.id is not None
+
+    items = []
+
+    for item in result.items:
+        assert item.id is not None
+        items.append(
             OrderItemResponseSchema(
                 id=item.id,
                 product_name=(item.product_name),
                 quantity=item.quantity,
                 price=item.price,
             )
-            for item in result.items
-        ],
+        )
+
+    return OrderResponseSchema(
+        id=result.id,
+        customer_name=result.customer_name,
+        items=items,
         total=result.total,
     )
 
@@ -130,25 +135,35 @@ def get_orders_endpoint(
         repository=repository, pricing_strategy=pricing_strategy
     )
 
-    orders = use_case.execute()
+    result = use_case.execute()
 
-    return [
-        OrderResponseSchema(
-            id=order.id,
-            customer_name=order.customer_name,
-            items=[
+    orders = []
+
+    for order in result:
+        assert order.id is not None
+        items = []
+
+        for item in order.items:
+            assert item.id is not None
+            items.append(
                 OrderItemResponseSchema(
                     id=item.id,
-                    product_name=item.product_name,
+                    product_name=(item.product_name),
                     quantity=item.quantity,
                     price=item.price,
                 )
-                for item in order.items
-            ],
-            total=order.total,
+            )
+
+        orders.append(
+            OrderResponseSchema(
+                id=order.id,
+                customer_name=order.customer_name,
+                items=items,
+                total=order.total,
+            )
         )
-        for order in orders
-    ]
+
+    return orders
 
 
 @router.get(
@@ -181,18 +196,25 @@ def get_order_by_id_endpoint(
             detail="Order not found",
         )
 
-    return OrderResponseSchema(
-        id=order.id,
-        customer_name=order.customer_name,
-        items=[
+    assert order.id is not None
+
+    items = []
+
+    for item in order.items:
+        assert item.id is not None
+        items.append(
             OrderItemResponseSchema(
                 id=item.id,
-                product_name=item.product_name,
+                product_name=(item.product_name),
                 quantity=item.quantity,
                 price=item.price,
             )
-            for item in order.items
-        ],
+        )
+
+    return OrderResponseSchema(
+        id=order.id,
+        customer_name=order.customer_name,
+        items=items,
         total=order.total,
     )
 
@@ -224,17 +246,24 @@ def delete_order_by_id_endpoint(
             detail="Order not found",
         )
 
-    return OrderResponseSchema(
-        id=order.id,
-        customer_name=order.customer_name,
-        items=[
+    assert order.id is not None
+
+    items = []
+
+    for item in order.items:
+        assert item.id is not None
+        items.append(
             OrderItemResponseSchema(
                 id=item.id,
-                product_name=item.product_name,
+                product_name=(item.product_name),
                 quantity=item.quantity,
                 price=item.price,
             )
-            for item in order.items
-        ],
+        )
+
+    return OrderResponseSchema(
+        id=order.id,
+        customer_name=order.customer_name,
+        items=items,
         total=order.total,
     )

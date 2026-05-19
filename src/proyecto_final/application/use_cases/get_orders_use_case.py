@@ -2,9 +2,8 @@ from proyecto_final.domain.entities.order import Order
 from proyecto_final.domain.ports.order_repository_port import (
     OrderRepositoryPort,
 )
-from proyecto_final.domain.pricing.pricing_strategy import (
-    PricingStrategy,
-)
+from proyecto_final.domain.pricing.pricing_strategy import PricingStrategy
+from proyecto_final.infrastructure.logging.logger import logger
 
 
 class GetOrdersUseCase:
@@ -33,6 +32,6 @@ class GetOrdersUseCase:
 
             order.total = self._pricing_strategy.calculate_total(order)
 
-            print(order.total)
+        logger.info("Obteniendo data")
 
         return orders
