@@ -18,6 +18,9 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from proyecto_final.infrastructure.database.base import Base  # noqa E402
+from proyecto_final.infrastructure.database.models.order_item_model import (  # noqa E402
+    OrderItemModel,
+)
 from proyecto_final.infrastructure.database.models.order_model import (  # noqa E402
     OrderModel,
 )
