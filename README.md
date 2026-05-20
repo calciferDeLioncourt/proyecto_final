@@ -463,4 +463,416 @@ El resultado final es un servicio mantenible, escalable y alineado con práctica
 
 # Arquitectura
 
-![Arquitectura](docs/architecture.png)
+![Arquitectura](docs/diagrama_arquitectura.png)
+
+# Uso de la API y CLI
+
+> Esta sección puede agregarse al final del README principal del proyecto.
+
+---
+
+# Uso de la API
+
+## Base URL
+
+### Desarrollo local
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+# Autenticación
+
+La API utiliza autenticación JWT mediante Bearer Token.
+
+Primero es necesario iniciar sesión para obtener un token.
+
+---
+
+## Login
+
+### Endpoint
+
+```http
+POST /auth/login
+```
+
+---
+
+## Request
+
+```json
+{
+  "username": "admin",
+  "password": "admin123"
+}
+```
+
+---
+
+## Response
+
+```json
+{
+  "access_token": "jwt-token",
+  "token_type": "bearer"
+}
+```
+
+---
+
+# Uso desde Swagger UI (Web)
+
+## Abrir Swagger
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## Pasos para autenticarse
+
+1. Abrir `/docs`
+2. Ejecutar `POST /auth/login`
+3. Copiar el `access_token`
+4. Presionar el botón `Authorize`
+5. Pegar el token utilizando el formato:
+
+```text
+Bearer <token>
+```
+
+Ejemplo:
+
+```text
+Bearer eyJhbGciOi...
+```
+
+---
+
+# Crear órdenes
+
+## Endpoint
+
+```http
+POST /orders
+```
+
+---
+
+## Headers
+
+```http
+Authorization: Bearer <token>
+```
+
+---
+
+## Request
+
+```json
+{
+  "customer_name": "Alberto Hernandez",
+  "items": [
+    {
+      "product_name": "Laptop",
+      "quantity": 1,
+      "price": 25000
+    },
+    {
+      "product_name": "Mouse",
+      "quantity": 2,
+      "price": 500
+    }
+  ]
+}
+```
+
+---
+
+## Response esperada
+
+```json
+{
+  "id": 1,
+  "customer_name": "Alberto Hernandez",
+  "total": 26000,
+  "items": [
+    {
+      "product_name": "Laptop",
+      "quantity": 1,
+      "price": 25000
+    },
+    {
+      "product_name": "Mouse",
+      "quantity": 2,
+      "price": 500
+    }
+  ]
+}
+```
+
+---
+
+# Listar órdenes
+
+## Endpoint
+
+```http
+GET /orders/{strategy}
+```
+
+---
+
+## Strategies disponibles
+
+* regular
+* vip
+* employee
+* black_friday
+
+---
+
+## Ejemplo
+
+```http
+GET /orders/regular
+```
+
+---
+
+## Headers
+
+```http
+Authorization: Bearer <token>
+```
+
+---
+
+# Consultar orden por ID
+
+## Endpoint
+
+```http
+GET /orders/{order_id}/{strategy}
+```
+
+---
+
+## Ejemplo
+
+```http
+GET /orders/1/regular
+```
+
+---
+
+## Headers
+
+```http
+Authorization: Bearer <token>
+```
+
+---
+
+# Eliminar orden
+
+## Endpoint
+
+```http
+DELETE /orders/{order_id}
+```
+
+---
+
+## Ejemplo
+
+```http
+DELETE /orders/1
+```
+
+---
+
+## Headers
+
+```http
+Authorization: Bearer <token>
+```
+
+---
+
+# Uso desde consola (cURL)
+
+## Login
+
+```bash
+curl -X POST http://127.0.0.1:8000/auth/login \
+-H "Content-Type: application/json" \
+-d '{
+  "username": "admin",
+  "password": "admin123"
+}'
+```
+
+---
+
+## Crear orden
+
+```bash
+curl -X POST http://127.0.0.1:8000/orders \
+-H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json" \
+-d '{
+  "customer_name": "Alberto Hernandez",
+  "items": [
+    {
+      "product_name": "Laptop",
+      "quantity": 1,
+      "price": 25000
+    }
+  ]
+}'
+```
+
+---
+
+## Obtener órdenes
+
+```bash
+curl -X GET http://127.0.0.1:8000/orders/regular \
+-H "Authorization: Bearer <token>"
+```
+
+---
+
+## Obtener orden por ID
+
+```bash
+curl -X GET http://127.0.0.1:8000/orders/1/regular \
+-H "Authorization: Bearer <token>"
+```
+
+---
+
+## Eliminar orden
+
+```bash
+curl -X DELETE http://127.0.0.1:8000/orders/1 \
+-H "Authorization: Bearer <token>"
+```
+
+---
+
+# Uso de la CLI
+
+La aplicación incluye una CLI desarrollada con Typer.
+
+---
+
+## Ver ayuda
+
+```bash
+poetry run orders-cli --help
+```
+
+---
+
+# Login desde CLI
+
+```bash
+poetry run orders-cli login admin admin123
+```
+
+---
+
+# Crear orden desde CLI
+
+```bash
+poetry run orders-cli create-order "Alberto Hernandez"
+```
+
+---
+
+# Listar órdenes desde CLI
+
+```bash
+poetry run orders-cli list-orders
+```
+
+---
+
+# Listar órdenes con strategy específica
+
+```bash
+poetry run orders-cli list-orders --strategy vip
+```
+
+---
+
+# Eliminar orden desde CLI
+
+```bash
+poetry run orders-cli delete-order 1
+```
+
+---
+
+# Endpoint de salud
+
+## Health Check
+
+```http
+GET /health
+```
+
+---
+
+## Response
+
+```json
+{
+  "status": "A la orden para el desorden"
+}
+```
+
+---
+
+# Flujo recomendado de uso
+
+## Desde Swagger
+
+1. Ejecutar login
+2. Copiar token
+3. Autorizar en Swagger
+4. Crear órdenes
+5. Consultar órdenes
+6. Eliminar órdenes
+
+---
+
+## Desde consola
+
+1. Obtener token JWT
+2. Utilizar Bearer Token en requests
+3. Consumir endpoints mediante curl
+
+---
+
+## Desde CLI
+
+1. Ejecutar login
+2. El token se almacena automáticamente
+3. Consumir comandos autenticados
+
+---
+
+# Notas importantes
+
+* Todas las rutas de órdenes requieren autenticación JWT.
+* El token JWT expira según la configuración del proyecto.
+* Swagger UI permite probar toda la API directamente desde el navegador.
+* La CLI utiliza internamente la API REST.
+* La variable `API_URL` puede configurarse mediante `.env` para apuntar a otro entorno.
