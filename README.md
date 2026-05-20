@@ -467,8 +467,6 @@ El resultado final es un servicio mantenible, escalable y alineado con práctica
 
 # Uso de la API y CLI
 
-> Esta sección puede agregarse al final del README principal del proyecto.
-
 ---
 
 # Uso de la API
@@ -479,6 +477,14 @@ El resultado final es un servicio mantenible, escalable y alineado con práctica
 
 ```text
 http://127.0.0.1:8000
+```
+
+---
+
+### Api publicada
+
+```text
+https://proyecto-final.albertohernandez.dev/docs
 ```
 
 ---
