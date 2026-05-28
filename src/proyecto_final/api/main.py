@@ -1,5 +1,6 @@
 # Instancia principal FastAPI
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from proyecto_final.api.routers.auth_router import router as auth_router
 from proyecto_final.api.routers.health_router import router as health_router
@@ -18,6 +19,17 @@ app = FastAPI(
     title="APIs Web FastAPI",
     version="1.0.0",
     description="Poyecto final",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:4200",
+        "http://127.0.0.1:4200",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Registro de routers
